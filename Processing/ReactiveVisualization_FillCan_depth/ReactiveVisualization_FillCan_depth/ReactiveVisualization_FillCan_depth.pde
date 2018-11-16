@@ -115,6 +115,8 @@ public void setup() {
 
   curVecHM = new HashMap<String, PVector[]>();
   preVecHM = new HashMap<String, PVector[]>();
+  
+  everyVecHM = new HashMap<String, PVector[]>();
 }
 
 
@@ -133,7 +135,7 @@ public void createParticle(float spawn_x, float spawn_y) {
   //int idx_curr = physics.getParticlesCount();
   //int   idx_prev = idx_curr - 1;
   float radius_collision_scale = 1.1f;
-  float radius   = 30; 
+  float radius   = 1; 
   //float rest_len = radius * 3 * radius_collision_scale;
 
   CustomVerletParticle2D pa = new CustomVerletParticle2D(particlesystem.papplet, idx_curr);
@@ -293,8 +295,11 @@ public void draw() {
   print("occupiedCount    " + occupiedCount + "        ");
   */
   
+//println(particlesystem.particles[500].ax);
+  
   if (keyPressed && key == ' ') {
     createParticle(mouseX, mouseY);
+    println(mouseX + "   " + mouseY + "   " + frameCount);
   }
 
   if (mousePressed && mouseButton == LEFT && !alreadyAdd) {
@@ -303,6 +308,14 @@ public void draw() {
     createParticleInCircle(mouseX, mouseY);
   }
   
+  if (mousePressed && mouseButton == RIGHT){
+    float[] pos = {mouseX, mouseY};
+     particlesystem.particles[2222].moveTo(pos, 0.3);
+     particlesystem.particles[2222].setRadius(30);
+     
+  }
+  float[] a = {100,100};
+     particlesystem.particles[2222].addForce(a);
 
   // update physics step
   boolean collision_detection = COLLISION_DETECTION && particlesystem.particle_param.DAMP_COLLISION != 0.0;
@@ -332,71 +345,157 @@ public void draw() {
 
 //////////////////////////////////////draw connections between two points //////////////////////////
 
-int segmentNum = 8;
+//int segmentNum = 8;
 
-float posx;
-float posy;
-boolean enter = false;
-int prevF;
-void drawConnections(String skKey){ 
+//float posx;
+//float posy;
+//boolean enter = false;
+//int prevF;
+///*
+//void drawConnections(String skKey){ 
   
-  for (int i = 0; i < 12; i++){
-    PVector startingJoint = skeletonsHM.get(skKey)[i*2];
-    PVector endingJoint = skeletonsHM.get(skKey)[i*2+1];
+//  for (int i = 0; i < 12; i++){
+//    PVector startingJoint = skeletonsHM.get(skKey)[i*2];
+//    PVector endingJoint = skeletonsHM.get(skKey)[i*2+1];
     
-    float distance = dist(startingJoint.x, startingJoint.y, endingJoint.x, endingJoint.y);
-    float conRadius = distance/segmentNum/2;
+//    float distance = dist(startingJoint.x, startingJoint.y, endingJoint.x, endingJoint.y);
+//    float conRadius = distance/segmentNum/2;
     
-    for (int j = 0; j < segmentNum + 1; j++){
-      if (prevF != frameCount) enter = false;
-      int n = i * (segmentNum + 1) + j;
-      preVecHM.get(skKey)[n] = curVecHM.get(skKey)[n];
+//    for (int j = 0; j < segmentNum + 1; j++){
+//      if (prevF != frameCount) enter = false;
+//      int n = i * (segmentNum + 1) + j;
+//      preVecHM.get(skKey)[n] = curVecHM.get(skKey)[n];
       
-      curVecHM.get(skKey)[n] = new PVector((endingJoint.x - startingJoint.x) / segmentNum * j + startingJoint.x, (endingJoint.y - startingJoint.y) / segmentNum * j + startingJoint.y);
+//      curVecHM.get(skKey)[n] = new PVector((endingJoint.x - startingJoint.x) / segmentNum * j + startingJoint.x, (endingJoint.y - startingJoint.y) / segmentNum * j + startingJoint.y);
      
      
-       
+//         float[] pos = {curVecHM.get(skKey)[n].x, curVecHM.get(skKey)[n].y};  
+//        particlesystem.particles[n].moveTo(pos, 1f);
       
-      if ((abs(preVecHM.get(skKey)[n].x - curVecHM.get(skKey)[n].x) > 5 || abs(preVecHM.get(skKey)[n].y - curVecHM.get(skKey)[n].y) > 5)){  
-        enter = true;
-          float[] pos = {curVecHM.get(skKey)[n].x, curVecHM.get(skKey)[n].y};  
-        particlesystem.particles[n].moveTo(pos, 1f);
-        //float preCurDist = dist(preVecHM.get(skKey)[n].x, preVecHM.get(skKey)[n].y, curVecHM.get(skKey)[n].x, curVecHM.get(skKey)[n].y);
+//      if ((abs(preVecHM.get(skKey)[n].x - curVecHM.get(skKey)[n].x) > 5 || abs(preVecHM.get(skKey)[n].y - curVecHM.get(skKey)[n].y) > 5)){  
+//        enter = true;
+//        //float preCurDist = dist(preVecHM.get(skKey)[n].x, preVecHM.get(skKey)[n].y, curVecHM.get(skKey)[n].x, curVecHM.get(skKey)[n].y);
      
-      //if (preOSCPos_x[n] != curOSCPos_y[n]){
-        particlesystem.particles[n].setRadius(0);
-        particlesystem.particles[n].setRadiusCollision(conRadius);
+//      //if (preOSCPos_x[n] != curOSCPos_y[n]){
+//        particlesystem.particles[n].setRadius(0);
+//        particlesystem.particles[n].setRadiusCollision(conRadius);
         
-        particlesystem.particles[n].enableCollisions(false);
+//        particlesystem.particles[n].enableCollisions(false);
         
-        particlesystem.particles[n].isOccupied = true;
+//        particlesystem.particles[n].isOccupied = true;
      
-        prevF = frameCount;
+//        prevF = frameCount;
 
-       }
-       else if (((abs( preVecHM.get(skKey)[n].x - curVecHM.get(skKey)[n].x) <= 5 && abs( preVecHM.get(skKey)[n].y - curVecHM.get(skKey)[n].y) <= 5))
-         && !enter){
+//       }
+//       else if (((abs( preVecHM.get(skKey)[n].x - curVecHM.get(skKey)[n].x) <= 5 && abs( preVecHM.get(skKey)[n].y - curVecHM.get(skKey)[n].y) <= 5))
+//         && !enter){
         
-        particlesystem.particles[n].setRadius(particlesystem.passRadius);
-        particlesystem.particles[n].enableCollisions(true);
-        particlesystem.particles[n].isOccupied = false;
+//        particlesystem.particles[n].setRadius(particlesystem.passRadius);
+//        particlesystem.particles[n].enableCollisions(true);
+//        particlesystem.particles[n].isOccupied = false;
         
-       }
+//       }
   
-    }
-  }
+//    }
+//  }
 
   
-}
+//}
+//*/
 
-void SetNormalRadius(){
-  //print("skeletonNum      " + skeletonNum);
-  for (int i = 0; i < skeletonNum * (segmentNum + 1); i++){
-   particlesystem.particles[i].setRadius(particlesystem.passRadius);
-   //print("setNormalRadius    " + i);
-  }
+////re-write drawConncetion. only detect the joint position
+//void drawConnections(String skKey){ 
   
-}
+//  for (int i = 0; i < 12; i++){
+    
+//    preVecHM.get(skKey)[i*2] = curVecHM.get(skKey)[i*2];
+//    preVecHM.get(skKey)[i*2+1] = curVecHM.get(skKey)[i*2+1];
+    
+//    PVector startingJoint = skeletonsHM.get(skKey)[i*2];
+//    PVector endingJoint = skeletonsHM.get(skKey)[i*2+1];
+    
+//    curVecHM.get(skKey)[i*2] = startingJoint;
+//    curVecHM.get(skKey)[i*2+1] = endingJoint;
+    
+//    //println("previous     " + preVecHM.get(skKey)[i*2] + "     current" +  curVecHM.get(skKey)[i*2] + "          ");
+    
+//    float distance = dist(startingJoint.x, startingJoint.y, endingJoint.x, endingJoint.y);
+//    float conRadius = distance/segmentNum/2;
+    
+    
+//    //starting point or ending point moves more than 5 pixel
+//    //if (preVecHM.get(skKey)[i*2].dist(curVecHM.get(skKey)[i*2]) > 15 || preVecHM.get(skKey)[i*2+1].dist(curVecHM.get(skKey)[i*2+1]) > 15){
+//      if ((startingJoint.x == width || startingJoint.y == height) || (endingJoint.x == width || endingJoint.y == height)) break;
+        
+//      //if (preVecHM.get(skKey)[i*2].dist(curVecHM.get(skKey)[i*2]) > 5 || preVecHM.get(skKey)[i*2+1].dist(curVecHM.get(skKey)[i*2+1]) > 5){
+//        for (int j = 0; j < segmentNum + 1; j++){
+//          // if (prevF != frameCount) enter = false;
+//           int  n = i * (segmentNum + 1) + j;
+//           everyVecHM.get(skKey)[n] = new PVector((endingJoint.x - startingJoint.x) / segmentNum * j + startingJoint.x, (endingJoint.y - startingJoint.y) / segmentNum * j + startingJoint.y);
+//           float[] pos = {everyVecHM.get(skKey)[n].x, everyVecHM.get(skKey)[n].y};
+//           particlesystem.particles[n].moveTo(pos, 1f);
+//           //createParticle(pos[0],pos[1]);
+//           //enter = true;
+//           float px = particlesystem.particles[n].px;
+//           float py = particlesystem.particles[n].py;
+//           float cx = particlesystem.particles[n].cx;
+//           float cy = particlesystem.particles[n].cy;
+//           float d = dist(px, py, cx, cy);
+//           //ArrayList<CustomVerletParticle2D> list = new ArrayList<CustomVerletParticle2D>();
+//           if (d > 5){
+//             particlesystem.particles[n].setRadius(conRadius);
+//             particlesystem.particles[n].enableCollisions(false);
+//             particlesystem.particles[n].isOccupied = true;
+            
+//            //list = findParticlesWithinRadius(particlesystem.particles[i].cx, particlesystem.particles[i].cy, 20);
+//             //for (CustomVerletParticle2D near : list) {
+//               //float[] a = {particlesystem.particles[i].cx - px, cy - py};
+//               //near.addForce(a);
+//              //near.isOccupied = true;
+//            // }
+
+//           }
+//           else{
+//             particlesystem.particles[n].setRadius(0);
+//             particlesystem.particles[n].isOccupied = false;
+             
+//           }
+           
+//           //particlesystem.particles[n].setRadiusCollision(conRadius);
+           
+//           //prevF = frameCount;
+          
+//        }
+        
+//          //resetUnusedParticle(i, conRadius);
+      
+//    //}
+//    //else if (preVecHM.get(skKey)[i*2].dist(curVecHM.get(skKey)[i*2]) <= 5 && preVecHM.get(skKey)[i*2+1].dist(curVecHM.get(skKey)[i*2+1]) <= 5
+//    //  && !enter){
+        
+//    //    for (int j = 0; j < segmentNum + 1; j++){
+//    //       int n = 1 * (segmentNum + 1) + j;
+//    //       particlesystem.particles[n].setRadius(0);
+//    //       particlesystem.particles[n].enableCollisions(true);
+//    //       particlesystem.particles[n].isOccupied = false;
+//    //    }
+//    //}
+//  }
+  
+
+  
+//}
+  
+
+
+//void SetNormalRadius(){
+//  //print("skeletonNum      " + skeletonNum);
+//  for (int i = 0; i < skeletonNum * (segmentNum + 1); i++){
+//   particlesystem.particles[i].setRadius(particlesystem.passRadius);
+//   //print("setNormalRadius    " + i);
+//  }
+  
+//}
 
 public void activateCollisionDetection(float[] val) {
   COLLISION_DETECTION = (val[0] > 0);
@@ -502,57 +601,63 @@ public void createGUI() {
 HashMap <String, PVector[]> skeletonsHM;
 HashMap <String, PVector[]> curVecHM;
 HashMap <String, PVector[]> preVecHM;
+HashMap <String, PVector[]> everyVecHM;
 int skeletonNum;
 
+
+int depthPointCount;
+PVector[] depthPoint;
+PVector[] prevDepthPoint;
+PVector[] currentDepthPoint;
 /* incoming osc message are forwarded to the oscEvent method. */
 void oscEvent(OscMessage theOscMessage) {
   //print("### received an osc message.");
   
-   if (theOscMessage.checkAddrPattern("/lost") == true){
-     SetNormalRadius(); 
+   //if (theOscMessage.checkAddrPattern("/lost") == true){
+     //SetNormalRadius(); 
      //print("lost");
-  }
+  //}
   
-  if (theOscMessage.checkAddrPattern("/skn") == true){
-     skeletonNum = theOscMessage.get(0).intValue();
+  //if (theOscMessage.checkAddrPattern("/skn") == true){
+  //   skeletonNum = theOscMessage.get(0).intValue();
      //print("skn    " + skeletonNum);
      //return;
-  }
+  //}
   
  
   
-  for (int skeN = 1; skeN < skeletonNum + 1; skeN++){
+  //for (int skeN = 1; skeN < skeletonNum + 1; skeN++){
     
-     if (theOscMessage.checkAddrPattern("/sk" + skeN) == true){
-        //create an empty joints array
-        if (!skeletonsHM.containsKey("sk" + skeN)){
-           //PVector[] joints = new PVector[24];
-           skeletonsHM.put("sk" + skeN, new PVector[24]);
-           curVecHM.put("sk" + skeN, new PVector[12*(segmentNum+1)]);
-           preVecHM.put("sk" + skeN, new PVector[12*(segmentNum+1)]);
-          
+  //   if (theOscMessage.checkAddrPattern("/sk" + skeN) == true){
+  //      //create an empty joints array
+  //      if (!skeletonsHM.containsKey("sk" + skeN)){
+  //         //PVector[] joints = new PVector[24];
+  //         skeletonsHM.put("sk" + skeN, new PVector[24]);
+  //         curVecHM.put("sk" + skeN, new PVector[/*12*(segmentNum+1)*/24]);
+  //         preVecHM.put("sk" + skeN, new PVector[/*12*(segmentNum+1)*/24]);
+  //         everyVecHM.put("sk" + skeN, new PVector[12 * (segmentNum + 1)]);
            
-           //print(skeletonsHM.get("sk1").length);
-         }
+  //         //print(skeletonsHM.get("sk1").length);
+  //       }
          
-         //skeletonsHM.get("sk1")[0].x =10;
-         //skeletonsHM.get("sk1")[0] = new PVector(1,1);
-         //println(skeletonsHM.get("sk1")[0]);
-         for (int n = 0; n < 12; n++){
+  //       //skeletonsHM.get("sk1")[0].x =10;
+  //       //skeletonsHM.get("sk1")[0] = new PVector(1,1);
+  //       //println(skeletonsHM.get("sk1")[0]);
+  //       for (int n = 0; n < 12; n++){
            
-           skeletonsHM.get("sk" + skeN)[n*2] = new PVector((1-theOscMessage.get(n*4).floatValue()) * width, (1-theOscMessage.get(n*4+1).floatValue())*height);
-           skeletonsHM.get("sk" + skeN)[n*2+1] = new PVector((1-theOscMessage.get(n*4 + 2).floatValue()) * width, (1-theOscMessage.get(n*4 + 3).floatValue())*height);
+  //         skeletonsHM.get("sk" + skeN)[n*2] = new PVector((1-theOscMessage.get(n*4).floatValue()) * width, (1-theOscMessage.get(n*4+1).floatValue())*height);
+  //         skeletonsHM.get("sk" + skeN)[n*2+1] = new PVector((1-theOscMessage.get(n*4 + 2).floatValue()) * width, (1-theOscMessage.get(n*4 + 3).floatValue())*height);
     
-           println(skeletonsHM.get("sk" + skeN)[n*2]);
-           println(skeletonsHM.get("sk" + skeN)[n*2 + 1]);
-         }
+  //         //println(skeletonsHM.get("sk" + skeN)[n*2] + "   " + n);
+  //         //println(skeletonsHM.get("sk" + skeN)[n*2 + 1]);
+  //       }
        
-         drawConnections("sk" + skeN);
+  //       drawConnections("sk" + skeN);
        
         
-      }
+  //    }
     
-  }
+  //}
   
  
   
@@ -604,9 +709,75 @@ void oscEvent(OscMessage theOscMessage) {
       return;
     }  
   } 
-  println("### received an osc message. with address pattern "+theOscMessage.addrPattern());
+  
   */
+println("### received an osc message. with address pattern "+theOscMessage.addrPattern());
+ //depth
+ if (theOscMessage.checkAddrPattern("/num") == true){
+   depthPointCount = theOscMessage.get(0).intValue();
+   println(depthPointCount);
+     
+   
+ }
+ prevDepthPoint = depthPoint;
+ depthPoint = new PVector[]{};
+ depthPoint = new PVector[depthPointCount];
  
+ //remove some prev opoint
+ //if (depthPointCount < prevDepthPoint.length){
+ //    int n = prevDepthPoint.length - depthPointCount;
+ //    for (int k = 0; k < n; k++){
+ //     prevDepthPoint = shorten(prevDepthPoint);
+ //    }
+   
+ //}
  
+ //println(depthPoint.length);
+ //depthPoint = new PVector[depthPointCount];
+ if (theOscMessage.checkAddrPattern("/depth") == true){
+     for (int i = 0; i < depthPointCount; i++){
+        depthPoint[i] = new PVector(theOscMessage.get(i*2).floatValue(), theOscMessage.get(i*2+1).floatValue());;
+        //println(depthPoint[i].y);
+        
+     }
+ }
+ drawDepthPoint();
+  
+}
+
+void drawDepthPoint(){
+  for (int i = 0; i < depthPointCount; i++){
+    //if (depthPoint[i].x <1 && depthPoint[i].y < 1){
+      float[] pos = {width*depthPoint[i].x, height*depthPoint[i].y};
+      
+           //particlesystem.particles[i].moveTo(pos, 0.3f);
+           particlesystem.particles[i].setPosition(width*depthPoint[i].x, height*depthPoint[i].y);
+           float px = particlesystem.particles[i].px;
+           float py = particlesystem.particles[i].py;
+           float cx = particlesystem.particles[i].cx;
+           float cy = particlesystem.particles[i].cy;
+           float d = dist(px, py, cx, cy);
+        if (d >10){
+         particlesystem.particles[i].setRadius(15);
+         particlesystem.particles[i].isOccupied = true;
+          println("enterif" + frameCount);
+        }
+        
+      
+      else{
+         particlesystem.initParticlesSize(i);
+         particlesystem.particles[i].isOccupied = false;
+          //println("idx      " + i + "occ" + particlesystem.particles[i].isOccupied + "    frameCount      " + frameCount);
+          println("enterelse" + frameCount);
+          //println("idx     "  + i + "       pos       " + particlesystem.particles[i].cx);
+      }
+      
+     
+    }
+  //}
+  //for ( int j = depthPointCount; j < particlesystem.particles.length; j++){
+  //  particlesystem.particles[j].isOccupied = false;
+  //  particlesystem.particles[j].setRadius(particlesystem.passRadius);
+  //}
   
 }
